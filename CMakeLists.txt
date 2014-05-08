@@ -3,7 +3,7 @@ CMAKE_POLICY(VERSION 2.6)
 
 
 # Required by libcompress
-set(CMAKE_C_FLAGS "-std=c99 -Wno-unused-result")
+set(CMAKE_C_FLAGS "-std=c99 -Wno-unused-result -Wno-unsequenced")
 
 FIND_PACKAGE(Torch REQUIRED)
 FIND_PACKAGE(JPEG QUIET)
