@@ -193,18 +193,10 @@ static int libjpeg_(Main_load)(lua_State *L)
 
   THTensor *tensor = NULL;
 
-  THByteTensor *src = luaT_checkudata(L, 1, "torch.ByteTensor");
-  if(src != NULL) {
-    if(THByteTensor_isContiguous(src)) {
-      unsigned char * data = THByteTensor_data(src);
-      size_t size = THByteTensor_nElement(src);
-      infile = fmemopen(data, size, "rb");
-    }
-    else {
-      luaL_error(L, "ByteTensor source is not contiguous");
-    }
-  }
-  else {
+  /* luaT_checkudata, just like luaL_checkstring, will raise an error if 
+   * the argument is not of the expected type. Instead, we want it to return NULL.
+   * We thus need to use lua_isstring */
+  if (lua_isstring(L, 1)) {
     /* In this example we want to open the input file before doing anything else,
      * so that the setjmp() error recovery below can assume the file is open.
      * VERY IMPORTANT: use "b" option to fopen() if you are on a machine that
@@ -215,6 +207,16 @@ static int libjpeg_(Main_load)(lua_State *L)
     if ((infile = fopen(filename, "rb")) == NULL)
     {
       luaL_error(L, "cannot open file <%s> for reading", filename);
+    }
+  } else {
+    THByteTensor *src = luaT_checkudata(L, 1, "torch.ByteTensor");
+    if(THByteTensor_isContiguous(src)) {
+      unsigned char * data = THByteTensor_data(src);
+      size_t size = THByteTensor_nElement(src);
+      infile = fmemopen(data, size, "rb");
+    }
+    else {
+      luaL_error(L, "ByteTensor source is not contiguous");
     }
   }
   
