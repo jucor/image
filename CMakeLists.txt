@@ -1,7 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 CMAKE_POLICY(VERSION 2.6)
 
-set(CMAKE_C_FLAGS "-Wno-unsequenced -Wno-unused-result")
+# Required by libcompress
+set(CMAKE_C_FLAGS "-std=gnu99 -Wno-unused-result -Wno-unsequenced")
 
 FIND_PACKAGE(Torch REQUIRED)
 FIND_PACKAGE(JPEG QUIET)
@@ -25,6 +26,11 @@ if (PNG_FOUND)
     include_directories (${PNG_INCLUDE_DIR})
     ADD_TORCH_PACKAGE(png "${src}" "${luasrc}" "Image Processing")
     TARGET_LINK_LIBRARIES(png luaT TH ${PNG_LIBRARIES})
+    
+    SET(src libcompress.c)
+    include_directories (${PNG_INCLUDE_DIR})
+    ADD_TORCH_PACKAGE(compress "${src}" "${luasrc}" "Image Processing")
+    TARGET_LINK_LIBRARIES(compress luaT TH ${PNG_LIBRARIES})
 else (PNG_FOUND)
     message ("WARNING: Could not find PNG libraries, PNG wrapper will not be installed")
 endif (PNG_FOUND)
