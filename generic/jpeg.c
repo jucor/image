@@ -195,7 +195,6 @@ static int libjpeg_(Main_load)(lua_State *L)
 
   THByteTensor *src = luaT_toudata(L, 1, "torch.ByteTensor");
   if(src != NULL) {
-#ifdef fmemopen
     if(THByteTensor_isContiguous(src)) {
       unsigned char * data = THByteTensor_data(src);
       size_t size = THByteTensor_nElement(src);
@@ -204,9 +203,6 @@ static int libjpeg_(Main_load)(lua_State *L)
     else {
       luaL_error(L, "ByteTensor source is not contiguous");
     }
-#else
-    luaL_error(L, "Cannot decompress from ByteTensor as fmemopen is not available on your system.");
-#endif
   }
   else {
     /* In this example we want to open the input file before doing anything else,
