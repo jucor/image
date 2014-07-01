@@ -11,6 +11,27 @@ SET(src ppm.c)
 ADD_TORCH_PACKAGE(ppm "${src}" "${luasrc}" "Image Processing")
 TARGET_LINK_LIBRARIES(ppm luaT TH)
 
+IF (APPLE) 
+    # Apple platform: our fmemopen.c provides fmemopen
+    SET(FMEMOPEN_FOUND TRUE)
+ELSE (APPLE)
+    # Non-Apple: linux has fmemopen, windows doesn't, check it the hard way
+    INCLUDE (CheckCSourceCompiles)
+    CHECK_C_SOURCE_COMPILES("
+#include <stdio.h>
+
+int main() {
+    char * buf = NULL;
+    fmemopen(buf, 0, \"r\");
+    return 0;
+}
+" FMEMOPEN_FOUND)
+ENDIF (APPLE)
+
+IF (FMEMOPEN_FOUND)
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFMEMOPEN_FOUND")
+ENDIF(FMEMOPEN_FOUND)
+
 if (JPEG_FOUND)
     SET(src jpeg.c fmemopen.c)
     include_directories (${JPEG_INCLUDE_DIR})

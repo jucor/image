@@ -195,7 +195,7 @@ static int libjpeg_(Main_load)(lua_State *L)
 
   THByteTensor *src = luaT_toudata(L, 1, "torch.ByteTensor");
   if(src != NULL) {
-#ifdef fmemopen
+#ifdef FMEMOPEN_FOUND
     if(THByteTensor_isContiguous(src)) {
       unsigned char * data = THByteTensor_data(src);
       size_t size = THByteTensor_nElement(src);
