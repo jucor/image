@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 CMAKE_POLICY(VERSION 2.6)
 
-set(CMAKE_C_FLAGS "-Wno-unsequenced -Wno-unused-result")
+set(CMAKE_C_FLAGS "-Wno-unsequenced -Wno-unused-result -std=gnu99")
 
 FIND_PACKAGE(Torch REQUIRED)
 FIND_PACKAGE(JPEG QUIET)
